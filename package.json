@@ -1,0 +1,42 @@
+{
+  "name": "kiber-one",
+  "version": "1.0.0",
+  "description": "hello world",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "publish": "electron-forge publish",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "build": "electron-packager . app --platform win32 --arch x64 --out dist/",
+    "setup": "electron-installer-windows --src dist/app-win32-x64/ --dest dist/installers/"
+  },
+  "devDependencies": {
+    "electron-installer-windows": "*",
+    "electron-packager": "*",
+    "electron-prebuilt": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jahanbaev/kiber-one.git"
+  },
+  "author": "Jahanbaev Samandar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jahanbaev/kiber-one/issues"
+  },
+  "homepage": "https://github.com/jahanbaev/kiber-one#readme",
+  "dependencies": {
+    "auto-launch": "^5.0.5",
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.4",
+    "@electron-forge/maker-deb": "^6.0.4",
+    "@electron-forge/maker-rpm": "^6.0.4",
+    "@electron-forge/maker-squirrel": "^6.0.4",
+    "@electron-forge/maker-zip": "^6.0.4",
+    "electron": "^22.1.0",
+    "electron-installer-windows": "^3.0.0"
+  }
+}
