@@ -2,4 +2,90 @@
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+}
+.flex{
+    display: flex;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-rows: repeat(12, 250px);
+    grid-gap: 1rem;
+    grid-auto-flow: dense;
+    padding: 10px;
+}
+
+.grid div{
+    width: 100%;
+    height: 100%;
+    background: #2196f3;
+    color: #fff;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.grid div h1{
+    font-size: 6.3rem;
+    font-weight: 400;
+    width: 9rem;
+    height: 9rem;
+    display: block;
+    border-radius: 50%;
+    background: rgb(83 83 83 / 35%);
+    text-align: center;
+    padding: 0;
+}
+
+.grid div h2{
+    margin-top: 12px;
+    font-size: 2.2rem;
+    font-weight: 500;
+}
+
+.main .logo{
+    width: 300px;
+    margin-bottom: 26px;
+}
+
+.main .name-input{
+    width: 220px;
+    height: 42px;
+    font-size: 21px;
+    border:none;
+    background: rgb(205, 205, 205);
+    padding: 9px;
+}
+
+.main .set-name-btn{
+    width: 120px;
+    height: 42px;
+    font-size: 21px;
+    color: #fff;
+    background: #2196f3;
+    border: none;
+    cursor: pointer;
+}
+
+
+.new-student-form{
+    flex-direction: column;
+    justify-content: center;
+}
+
+.new-student-form input{
+    margin-bottom: 10px;
 }
