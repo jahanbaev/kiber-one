@@ -17,7 +17,7 @@
     "@electron-forge/maker-rpm": "^6.0.4",
     "@electron-forge/maker-squirrel": "^6.0.4",
     "@electron-forge/maker-zip": "^6.0.4",
-    "electron": "^22.1.0",
+    "electron": "^22.2.1",
     "electron-installer-windows": "^3.0.0"
   },
   "repository": {
@@ -32,10 +32,15 @@
   "homepage": "https://github.com/jahanbaev/kiber-one#readme",
   "dependencies": {
     "auto-launch": "^5.0.5",
+    "body-parser": "^1.20.1",
     "chokidar": "^3.5.3",
     "electron-squirrel-startup": "^1.0.0",
     "express": "^4.18.2",
     "ffmpeg-static": "^5.1.0",
-    "node-rtsp-stream": "^0.0.9"
+    "hound": "^1.0.5",
+    "node-fetch": "^2.6.1",
+    "node-rtsp-stream": "^0.0.9",
+    "node-shutdown-windows": "^1.0.0",
+    "serve-index": "^1.9.1"
   }
 }
