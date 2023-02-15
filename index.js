@@ -1,15 +1,16 @@
-const {app, BrowserWindow, ipcMain} = require('electron')
+const {app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 const AutoLaunch = require('auto-launch');
 const fs = require('fs')
 const path = require('path');
 const ipcRenderer = require('electron').ipcRenderer;
-const { networkInterfaces } = require('os');
 const { exec } = require('child_process');
 const fetch =  require('node-fetch');
 const express     = require('express');
 const serveIndex = require('serve-index');
 const http = require('http');
 const  bodyParser = require('body-parser');
+const electronLocalshortcut = require('electron-localshortcut');
+const ip = require("ip");
 
 let date_ob = new Date();
 
@@ -91,12 +92,12 @@ const listenFs = () =>{
 
 
 function download(url, dest, name, cb, time) {
-  if (!fs.existsSync(`/Users/User/Documents/${year + "." + month + "." + date}`)){
-    fs.mkdirSync(`/Users/User/Documents/${year + "." + month + "." + date}`);
+  if (!fs.existsSync(`/Users/${require("os").userInfo().username}/Documents/${year + "." + month + "." + date}`)){
+    fs.mkdirSync(`/Users/${require("os").userInfo().username}/Documents/${year + "." + month + "." + date}`);
   }
 
-  if (!fs.existsSync(`/Users/User/Documents/${year + "." + month + "." + date}/${time}`)){
-    fs.mkdirSync(`/Users/User/Documents/${year + "." + month + "." + date}/${time}`);
+  if (!fs.existsSync(`/Users/${require("os").userInfo().username}/Documents/${year + "." + month + "." + date}/${time}`)){
+    fs.mkdirSync(`/Users/${require("os").userInfo().username}/Documents/${year + "." + month + "." + date}/${time}`);
   }
 
   if (!fs.existsSync(dest)){
@@ -121,8 +122,8 @@ const createServerLocal = (port) => {
     app.post('/request', jsonParser,(req, res) => {
       
       console.log(req.body.url)
-      download("http://"+req.body.url, `/Users/User/Documents/${year + "." + month + "." + date}/${req.body.time}/${req.body.user}/`, req.body.url.split("/").slice(-1)[0], ()=>{}, req.body.time)
-     
+      download("http://"+req.body.url, `/Users/${require("os").userInfo().username}/Documents/${year + "." + month + "." + date}/${req.body.time}/${req.body.user}/`, req.body.url.split("/").slice(-1)[0], ()=>{}, req.body.time)
+
       res.send('hello world');
     });
 
@@ -157,7 +158,12 @@ autoLauncher.isEnabled().then(function(isEnabled) {
 });
 
 const createWindow = () => {
+
+  globalShortcut.unregisterAll()
+  
+ 
   const win = new BrowserWindow({
+    skipTaskbar: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -165,11 +171,35 @@ const createWindow = () => {
     autoHideMenuBar: true,
 });
 
+win.setAlwaysOnTop(true);
+
+const focus = () =>{
+  win.show();
+  win.focus()
+  win.show();
+}
+
+win.on('close',  (event) => {
+  event.preventDefault()
+  focus()
+  return false
+})
+
+ipcMain.on("focus", (event, data) => {
+    focus()
+})
+electronLocalshortcut.register(win, 'Alt+Tab', () => {
+    focus()
+});
+
 
 ipcMain.on("ipaddress", (event, data) => {
   host = data
 });
 
+ipcMain.on("link", (event, data) => {
+  require("shell").openExternal(data)
+});
 
 ipcMain.on("files", (event, data) => {
   filesSort = data.split(",")
@@ -196,7 +226,14 @@ ipcMain.on('show', (event, data) => {
 }
 
 app.whenReady().then(() => {
+  exec('tasklist', (err, out, code) => { //tasklist is windows, but run command to get proccesses
+    const id = processIdFromTaskList(processName, out); //get process id from name and parse from output of executed command
+    process.kill(id, "SIGKILL"); //rekt
+  });
+  
   if(workingDay == 6 || workingDay == 0){
     createWindow()
   }
+
 })
+

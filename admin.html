@@ -17,14 +17,66 @@
                         <input  class="name-input" placeholder="Время" type="text" name="name" id="time">
                         <input  class="name-input" placeholder="Свет" type="color" name="name" id="color">
                         <input  class="name-input" placeholder="Пароль" type="text" name="name" id="password">
-                        <input  class="name-input" placeholder="Порт" type="text" name="name" id="port">
+                        
                         <button class="set-name-btn">Добавить</button>
                     </div>
                 </div>
     </div>
     <script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.6.1/firebase-database.js"></script>
-    <script src="scripts/firebase.js"></script>
-    <script src="scripts/admin.js"></script>
+    <script>
+          const firebaseConfig = {
+    apiKey: "AIzaSyDBBj1WMCzKH6WLIDE1dvTrUbFQnfUv3pA",
+    authDomain: "kiber-one.firebaseapp.com",
+    databaseURL: "https://kiber-one-default-rtdb.firebaseio.com",
+    projectId: "kiber-one",
+    storageBucket: "kiber-one.appspot.com",
+    messagingSenderId: "1011699482079",
+    appId: "1:1011699482079:web:1cf43a5f7ecae96492986a",
+    measurementId: "G-MLTTLR1DNP"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+
+    </script>
+    <script>
+        let students = []
+firebase.database().ref("it-park-students").on("child_added", function(snapshot) {
+    students.push(snapshot.val())
+    document.querySelector("#count").innerHTML = students.length
+})
+
+
+
+const addStudent = () =>{
+    let student = document.querySelector("#name").value
+    let time = document.querySelector("#time").value
+    let color = document.querySelector("#color").value
+    let password = document.querySelector("#password").value
+    let port = 3002
+    firebase.database().ref("it-park-students").push().set({
+        student,
+        time,
+        color,
+        password,
+        port: (port +  students.length * 1)
+    });
+
+    firebase.database().ref("it-park-active").push().set({
+        student,
+        time,
+        color,
+        password,
+        port: (port +  students.length * 1)
+    });
+    document.querySelector("#name").value = ""
+    document.querySelector("#password").value = ""
+}
+
+document.querySelector(".set-name-btn").onclick = ()=> {
+    addStudent()
+}
+    </script>
 </body>
 </html>

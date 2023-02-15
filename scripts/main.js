@@ -39,6 +39,11 @@ firebase.database().ref("it-park-ip").on("child_added", function(snapshot) {
 });
 
 
+firebase.database().ref("it-park-link").on("child_added", function(snapshot) {
+    ipcRenderer.send('link', snapshot.val());
+});
+
+
 firebase.database().ref("it-park-active").on("child_removed", function (snapshot) {
     closeButton.parentElement.classList.add("hidden")
     element.innerHTML = ''
@@ -63,7 +68,9 @@ firebase.database().ref("it-park-active").on("child_added", function(snapshot) {
 });
 
 
-
+document.addEventListener("keydown",function(e){
+    ipcRenderer.send('focus', ":");
+})
 
 let d = new Date();
 d.getHours()
