@@ -19,7 +19,13 @@ nextButton.onclick = () => {
         ipcRenderer.send(CHANNEL_NAME, "success:"+userData);
         passwordInput.value = ""
     }
-} 
+}
+
+console.log("my ip is: ", ipcRenderer.send('getIp', ""))
+
+ipcRenderer.on("getIp", (event, data) => {
+    console.log(data);
+  });
 
 closeButton.onclick = () => {
     closeButton.parentElement.classList.add("hidden")
