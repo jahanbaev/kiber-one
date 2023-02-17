@@ -129,8 +129,7 @@ const createServerLocal = (port) => {
       app.use('/', serveIndex(`/Users/${require("os").userInfo().username}/`));
   }
   app.post('/request', jsonParser, (req, res) => {
-
-      console.log(req.body.url)
+      
       download("http://" + req.body.url, `/Users/${require("os").userInfo().username}/Documents/${year + "." + month + "." + date}/${req.body.time}/${req.body.user}/`, req.body.url.split("/").slice(-1)[0], () => {}, req.body.time)
 
       res.send('hello world');
