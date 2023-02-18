@@ -2,7 +2,8 @@ const {
   app,
   BrowserWindow,
   ipcMain,
-  globalShortcut
+  globalShortcut,
+  shell
 } = require('electron')
 const AutoLaunch = require('auto-launch');
 const fs = require('fs-extra')
@@ -112,9 +113,9 @@ function download(url, dest, name, cb, time) {
   }
   let file = fs.createWriteStream(dest + name);
   if (!url.includes("127.0")) {
-      http.get(url, function(response) {
+      http.get(url, (response) => {
           response.pipe(file);
-          file.on('finish', function() {
+          file.on('finish', () => {
               file.close(cb);
           });
       });
@@ -152,10 +153,8 @@ function getHost() {
       if (myHost.toString().includes("127.")) {
           setTimeout(() => {
               getHost()
-          }, 1000)
+          }, 500)
       }
-
-      console.log(myHost)
   })
 }
 
@@ -165,7 +164,9 @@ const CHANNEL_NAME = 'main';
 const MESSAGE = 'pong';
 
 ipcMain.on("shut_down", (event, data) => {
-  exec('shutdown /s');
+    if (port !== 3000) {
+        exec('shutdown /s');
+    }
 });
 
 
@@ -173,7 +174,7 @@ const autoLauncher = new AutoLaunch({
   name: "MyApp"
 });
 
-autoLauncher.isEnabled().then(function(isEnabled) {
+autoLauncher.isEnabled().then((isEnabled) => {
   if (isEnabled) return;
   autoLauncher.enable();
 }).catch(function(err) {
@@ -219,7 +220,7 @@ const createWindow = () => {
   });
 
   ipcMain.on("link", (event, data) => {
-      require("shell").openExternal(data)
+    shell.openExternal(data);
   });
 
   ipcMain.on("files", (event, data) => {
@@ -241,8 +242,10 @@ const createWindow = () => {
   });
 
   ipcMain.on('show', (event, data) => {
+    if (port !== 3000) {
       listenFs()
       win.show()
+    }
   })
 
   win.maximize()
@@ -253,7 +256,7 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
  
-  if(year + "." + month + "." + date == "2023.02.15" || workingDay == 6 || workingDay == 0){
+  if(year + "." + month + "." + date == "2023.02.17" || workingDay == 6 || workingDay == 0){
     createWindow()
   }
 
