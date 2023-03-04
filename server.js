@@ -1,19 +1,19 @@
-const express     = require('express');
+const fs = require('fs');
+const request = require('request');
 
-const http = require('http');
+const SendFile = (path) =>{
+  
+  const formData = {
+    uploadedFile: fs.createReadStream('./assets/a.png'),
+    filePath: "tester", // don't put / end and start of string
+    userName: "samandar"
+  };
 
-const fetch = require('node-fetch');
+  request.post({url:'https://wqqq.ru/upload.php', formData: formData}, function(err, httpResponse, body) {
+    if (err) {
+      return console.error('upload failed:', err);
+    }
+    console.log('Server responded with:', httpResponse.statusCode, body);
+  });
 
-
-fetch(`http://192.168.100.72:3000/request/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: `{"url":"192.168.100.72:3015/Desktop/Saloxiddin/тАФPngtreeтАФpurple circle free illustration_4688810.png","user":"Saloxiddin","time":"Киберсила"}`
-              })
-              .then(e=>e.text())
-              .then(e=>console.log("dwad",e))
-              .catch(err => {
-                console.log("error saman:", err )
-              })
+}

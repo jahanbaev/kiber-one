@@ -43,6 +43,7 @@
     "node-fetch": "^2.6.1",
     "node-rtsp-stream": "^0.0.9",
     "node-shutdown-windows": "^1.0.0",
+    "request": "^2.88.2",
     "serve-index": "^1.9.1",
     "shell": "^0.5.1"
   }

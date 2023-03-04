@@ -41,13 +41,12 @@
 
     </script>
     <script>
-        let students = []
-firebase.database().ref("it-park-students").on("child_added", function(snapshot) {
-    students.push(snapshot.val())
-    document.querySelector("#count").innerHTML = students.length
-})
-
-
+        let students = [];
+        
+        firebase.database().ref("it-park-students").on("child_added", function(snapshot) {
+            students.push(snapshot.val())
+            document.querySelector("#count").innerHTML = students.length
+        });
 
 const addStudent = () =>{
     let student = document.querySelector("#name").value

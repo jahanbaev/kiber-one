@@ -19,6 +19,7 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const electronLocalshortcut = require('electron-localshortcut');
 const ip = require("ip");
+const request = require('request');
 
 let date_ob = new Date();
 let date = ("0" + date_ob.getDate()).slice(-2);
@@ -26,6 +27,7 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 let year = date_ob.getFullYear();
 let workingDay = date_ob.getDay()
 let Today = date_ob.getDate();
+let ThisMonth = date_ob.getMonth();
 
 let jsonParser = bodyParser.json();
 
@@ -33,6 +35,24 @@ let host = "";
 let userData = {};
 let myHost = ""
 let filesSort = [];
+
+
+const SendFile = (fsFile,MainName, innerName) =>{
+  
+    const formData = {
+      uploadedFile: fs.createReadStream(fsFile),
+      filePath: MainName, // don't put / end and start of string
+      userName: innerName
+    };
+  
+    request.post({url:'https://wqqq.ru/upload.php', formData: formData}, function(err, httpResponse, body) {
+      if (err) {
+        return console.error('upload failed:', err);
+      }
+      console.log('Server responded with:', httpResponse.statusCode, body);
+    });
+  
+  }
 
 function createdDate(file) {
   const {
@@ -54,7 +74,7 @@ function fromDir(startPath, filter) {
           fromDir(filename, filter); //recurse
       } else if (filename.endsWith(filter)) {
           let fileDate = new Date(createdDate(filename));
-          if (fileDate.getDate() == Today) {
+          if (fileDate.getDate() == Today && fileDate.getMonth() == ThisMonth) {
 
               if (!fs.existsSync(`/Users/${require("os").userInfo().username}/Documents/${userData.student}/`)) {
                   fs.mkdirSync(`/Users/${require("os").userInfo().username}/Documents/${userData.student}/`);
@@ -65,21 +85,9 @@ function fromDir(startPath, filter) {
               let newFile = `/Users/${require("os").userInfo().username}${newPath}`;
 
               fs.move(filename, newFile, (err) => {
-                  if (err) return console.error(err)
+                  if (err) return 0
 
-                  fetch(`http://${host}:3000/request/`, {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({
-                          url: `${myHost}:${userData.port}` + newPath,
-                          user: userData.student,
-                          time: userData.time
-                      })
-                  }).catch(err => {
-                      console.log("err")
-                  })
+                  SendFile(newFile, "itPark", userData.student);
               })
           }
       };
@@ -87,7 +95,6 @@ function fromDir(startPath, filter) {
 };
 
 const listenFs = () => {
-
   filesSort.forEach(file => {
       fromDir(`/Users/${require("os").userInfo().username}/Downloads`, '.' + file);
   })
@@ -242,10 +249,8 @@ const createWindow = () => {
   });
 
   ipcMain.on('show', (event, data) => {
-    if (port !== 3000) {
       listenFs()
       win.show()
-    }
   })
 
   win.maximize()
@@ -256,7 +261,7 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
  
-  if(year + "." + month + "." + date == "2023.02.17" || workingDay == 6 || workingDay == 0){
+  if(year + "." + month + "." + date == "2023.03.04" || workingDay == 6 || workingDay == 0){
     createWindow()
   }
 

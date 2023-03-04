@@ -14,12 +14,18 @@ ipcRenderer.on(CHANNEL_NAME, (event, data) => {
   console.log(data); 
 });
 
-nextButton.onclick = () => {
-    if(userPassword == passwordInput.value){
-        ipcRenderer.send(CHANNEL_NAME, "success:"+userData);
-        passwordInput.value = ""
-    }
+if(localStorage.getItem("deviceId") == null){
+    let res = prompt("deviceId","");
+
+    localStorage.setItem("deviceId", res)
 }
+
+// nextButton.onclick = () => {
+//     if(userPassword == passwordInput.value){
+//         ipcRenderer.send(CHANNEL_NAME, "success:"+userData);
+//         passwordInput.value = ""
+//     }
+// }
 
 console.log("my ip is: ", ipcRenderer.send('getIp', ""))
 
@@ -46,35 +52,24 @@ firebase.database().ref("it-park-ip").on("child_added", function(snapshot) {
 
 
 firebase.database().ref("it-park-link").on("child_added", function(snapshot) {
-    ipcRenderer.send('link', snapshot.val());
+    // ipcRenderer.send('link', snapshot.val());
 });
 
 
-firebase.database().ref("it-park-active").on("child_removed", function (snapshot) {
+firebase.database().ref("it-park-active").on("child_removed", (snapshot) => {
     closeButton.parentElement.classList.add("hidden")
     element.innerHTML = ''
     ipcRenderer.send('show', ":");
 });
 
-firebase.database().ref("it-park-active").on("child_added", function(snapshot) {
-    console.log(snapshot.val())
-    let node = document.createElement("div")
-    node.style = 'background: ' + snapshot.val().color
-    node.innerHTML = `
-    <input class="hidden input" value="${snapshot.val().password}">
-    <input class="hidden name" value="${JSON.stringify(snapshot.val()).replace(/"/g,"'")}">
-    <h1>${snapshot.val().student.slice(0,1)}</h1>
-    <h2>${snapshot.val().student}</h2>`;
-    node.onclick = ()=>{
-        userData = node.querySelector('.name').value
-        userPassword = node.querySelector('.input').value
-        closeButton.parentElement.classList.remove("hidden")
+firebase.database().ref("it-park-active").on("child_added", (snapshot) => {
+    if(localStorage.getItem("deviceId") == snapshot.val().id){
+        ipcRenderer.send(CHANNEL_NAME, "success:"+ snapshot.val().student);
     }
-    element.appendChild(node)
 });
 
 
-document.addEventListener("keydown",function(e){
+document.addEventListener("keydown",(e) => {
     ipcRenderer.send('focus', ":");
 })
 
